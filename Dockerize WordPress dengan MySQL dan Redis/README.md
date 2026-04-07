@@ -114,13 +114,13 @@ Untuk caching sehingga meningkatkan performa, mempercepat loading, dan mengurang
 
 ## 📸 Screenshot
 * Dashboard WordPress
-(images/wordpress.png)
+  (Screenshots/wordpress.png)
 
 * Hasil `docker ps`
-(images/terminal.png)
+  (Screenshots/terminal.png)
 
 * Redis CLI
-(images/redis.png)
+  (Screenshots/redis.png)
 
 ✨ Author
 
