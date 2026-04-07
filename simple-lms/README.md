@@ -18,3 +18,15 @@ DB_PORT=5432
 
 ![Django Home](Screenshots/homedjango.png)
 ![Django Admin](Screenshots/djangoadmin.png)
+
+Kenapa perlu volume untuk MySQL?
+Agar data database tetap tersimpan dan tidak hilang meskipun container dihentikan atau dihapus.
+
+Apa fungsi depends_on?
+Untuk mengatur urutan startup container agar WordPress dijalankan setelah MySQL.
+
+Bagaimana cara WordPress container connect ke MySQL?
+Menggunakan environment variables dengan host berupa nama service mysql dalam network Docker.
+
+Apa keuntungan pakai Redis untuk WordPress?
+Untuk caching sehingga meningkatkan performa, mempercepat loading, dan mengurangi beban database.
