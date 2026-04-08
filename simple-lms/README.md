@@ -103,6 +103,9 @@ Enrollment → relasi student–course (unique)
 Progress → tracking lesson completion
 
 ### Screenshots
+Admin Dashboard
 ![Django AdminDashboard](Screenshots/admin.png)
+
+Query Demo
 ![Django QueryDemo](Screenshots/querydemo.png)
 =======
