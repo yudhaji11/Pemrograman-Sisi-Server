@@ -1,9 +1,10 @@
 services:
   web:
     build: .
+    working_dir: /app/code/code
     command: sh -c "sleep 10 && python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/app
+      - .:/app/code
     ports:
       - "8000:8000"
     env_file:
