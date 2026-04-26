@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'courses.User'

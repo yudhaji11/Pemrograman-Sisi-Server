@@ -107,3 +107,76 @@ Menggunakan environment variables dengan host berupa nama service mysql dalam ne
 Apa keuntungan pakai Redis untuk WordPress?
 Untuk caching sehingga meningkatkan performa, mempercepat loading, dan mengurangi beban database.
 >>>>>>> c0fa9ba390df6f3c536ac491837ca6d077463c50
+
+Progress 3 Simple LMS API (Django Ninja + JWT)
+Deskripsi
+
+Proyek ini adalah sistem Learning Management System (LMS) berbasis REST API menggunakan Django Ninja dengan autentikasi JWT dan role-based access control.
+
+Tech Stack
+Python
+Django
+Django Ninja
+JWT (JSON Web Token)
+SQLite / PostgreSQL (opsional)
+Postman untuk testing API
+Fitur
+Authentication
+Register user
+Login (JWT access token)
+Get current user (/me)
+Update profile (/me)
+Courses
+
+Public
+
+GET /api/courses (list courses)
+GET /api/courses/{id} (detail course)
+
+Protected
+
+POST /api/courses (create course - instructor)
+PATCH /api/courses/{id} (update course - owner)
+DELETE /api/courses/{id} (admin)
+Authentication System
+JWT access token
+Password hashing menggunakan Django
+Role: admin, instructor, student
+Permission System
+require_role decorator untuk membatasi akses endpoint
+Validasi ownership untuk update course
+API Endpoints
+Authentication
+POST /api/auth/register
+POST /api/auth/login
+GET /api/auth/me
+PUT /api/auth/me
+Courses
+GET /api/courses
+GET /api/courses/{id}
+POST /api/courses
+PATCH /api/courses/{id}
+DELETE /api/courses/{id}
+Cara Menjalankan
+Clone repository
+Install dependencies
+Jalankan Django server
+Akses API di http://localhost:8000
+Testing API
+
+API dapat diuji menggunakan Postman dengan cara:
+
+Import file Postman collection
+Login untuk mendapatkan token
+Gunakan token pada endpoint protected
+Struktur Project
+auth.py (authentication & authorization)
+api.py (courses endpoints)
+models.py (database model)
+schemas.py (request/response validation)
+Flow Sistem
+
+Register → Login → Get Token → Akses API
+
+Screenshot Swagger
+![Swagger](Screenshots/swagger.png)
