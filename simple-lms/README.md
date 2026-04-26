@@ -19,6 +19,19 @@ DB_PORT=5432
 ![Django Home](Screenshots/homedjango.png)
 ![Django Admin](Screenshots/djangoadmin.png)
 
+Kenapa perlu volume untuk MySQL?
+Agar data database tetap tersimpan dan tidak hilang meskipun container dihentikan atau dihapus.
+
+Apa fungsi depends_on?
+Untuk mengatur urutan startup container agar WordPress dijalankan setelah MySQL.
+
+Bagaimana cara WordPress container connect ke MySQL?
+Menggunakan environment variables dengan host berupa nama service mysql dalam network Docker.
+
+Apa keuntungan pakai Redis untuk WordPress?
+Untuk caching sehingga meningkatkan performa, mempercepat loading, dan mengurangi beban database.
+>>>>>>> c0fa9ba390df6f3c536ac491837ca6d077463c50
+
 <<<<<<< HEAD
 # Progress 2: Simple LMS - Database Design & ORM Implementation
 
@@ -65,8 +78,6 @@ simple-lms/
 ## ⚙️ Cara Menjalankan Project
 
 ### 1. Clone Repository
-
-```bash
 git clone <repo-url>
 cd simple-lms
 ### 2. Jalankan docker
@@ -92,9 +103,13 @@ Enrollment → relasi student–course (unique)
 Progress → tracking lesson completion
 
 ### Screenshots
+Admin Dashboard
 ![Django AdminDashboard](Screenshots/admin.png)
+
+Query Demo
 ![Django QueryDemo](Screenshots/querydemo.png)
 =======
+<<<<<<< HEAD
 Kenapa perlu volume untuk MySQL?
 Agar data database tetap tersimpan dan tidak hilang meskipun container dihentikan atau dihapus.
 
@@ -180,3 +195,5 @@ Register → Login → Get Token → Akses API
 
 Screenshot Swagger
 ![Swagger](Screenshots/swagger.png)
+=======
+>>>>>>> bed1e6d7986380c25f66530020fc6fd350929e82
