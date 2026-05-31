@@ -1,9 +1,13 @@
 from ninja import Router, Schema
 from typing import List
 from django.shortcuts import get_object_or_404
+from django.core.cache import cache
+from .mongo_utils import log_activity, log_learning_analytics
+from django_ratelimit.decorators import ratelimit
 
 from .models import Course
 from .auth import JWTAuth, require_role
+
 
 router = Router()
 
@@ -28,25 +32,70 @@ class CourseUpdateSchema(Schema):
 
 
 # ========================
-# LIST (PUBLIC)
+# LIST (PUBLIC) + REDIS CACHE
 # ========================
-@router.get("/", response=List[CourseOutSchema])
+@router.get("/")
+@ratelimit(key="ip", rate="60/m", block=True)
 def list_courses(request):
-    return Course.objects.all()
+    cache_key = "course_list"
+    cached_data = cache.get(cache_key)
+
+    if cached_data:
+        return {
+            "source": "redis_cache",
+            "data": cached_data
+        }
+
+    courses = list(Course.objects.values(
+        "id",
+        "title",
+        "description"
+    ))
+
+    cache.set(cache_key, courses, timeout=300)
+
+    return {
+        "source": "database",
+        "data": courses
+    }
 
 
 # ========================
-# DETAIL (PUBLIC)
+# DETAIL (PUBLIC) + REDIS CACHE
 # ========================
-@router.get("/{course_id}", response=CourseOutSchema)
+@router.get("/{course_id}")
+@ratelimit(key="ip", rate="60/m", block=True)
 def get_course(request, course_id: int):
-    return get_object_or_404(Course, id=course_id)
+    cache_key = f"course_detail_{course_id}"
+    cached_data = cache.get(cache_key)
+
+    if cached_data:
+        return {
+            "source": "redis_cache",
+            "data": cached_data
+        }
+
+    course = Course.objects.filter(id=course_id).values(
+        "id",
+        "title",
+        "description"
+    ).first()
+
+    if not course:
+        return {"error": "Course not found"}
+
+    cache.set(cache_key, course, timeout=300)
+
+    return {
+        "source": "database",
+        "data": course
+    }
 
 
 # ========================
-# CREATE (INSTRUCTOR ONLY) - FIXED
+# CREATE (INSTRUCTOR ONLY) + CACHE INVALIDATION
 # ========================
-@router.post("/", auth=JWTAuth(), response=CourseOutSchema)
+@router.post("/", auth=JWTAuth())
 @require_role(["instructor"])
 def create_course(request, data: CourseCreateSchema):
     user = request.auth
@@ -57,6 +106,21 @@ def create_course(request, data: CourseCreateSchema):
         instructor=user
     )
 
+    log_activity(
+        user_id=user.id,
+        action="CREATE_COURSE",
+        detail=f"Course '{course.title}' created"
+    )
+
+    log_learning_analytics(
+        user_id=user.id,
+        course_id=course.id,
+        event_type="COURSE_CREATED",
+        progress=0
+    )
+
+    cache.delete("course_list")
+
     return {
         "id": course.id,
         "title": course.title,
@@ -65,9 +129,9 @@ def create_course(request, data: CourseCreateSchema):
 
 
 # ========================
-# UPDATE (OWNER ONLY)
+# UPDATE (OWNER ONLY) + CACHE INVALIDATION
 # ========================
-@router.patch("/{course_id}", auth=JWTAuth(), response=CourseOutSchema)
+@router.patch("/{course_id}", auth=JWTAuth())
 @require_role(["instructor"])
 def update_course(request, course_id: int, data: CourseUpdateSchema):
     user = request.auth
@@ -84,6 +148,15 @@ def update_course(request, course_id: int, data: CourseUpdateSchema):
 
     course.save()
 
+    log_activity(
+        user_id=user.id,
+        action="UPDATE_COURSE",
+        detail=f"Course ID {course_id} updated"
+    )
+
+    cache.delete("course_list")
+    cache.delete(f"course_detail_{course_id}")
+
     return {
         "id": course.id,
         "title": course.title,
@@ -92,12 +165,22 @@ def update_course(request, course_id: int, data: CourseUpdateSchema):
 
 
 # ========================
-# DELETE (ADMIN ONLY)
+# DELETE (ADMIN ONLY) + CACHE INVALIDATION
 # ========================
 @router.delete("/{course_id}", auth=JWTAuth())
 @require_role(["admin"])
 def delete_course(request, course_id: int):
     course = get_object_or_404(Course, id=course_id)
+    
+    log_activity(
+        user_id=request.auth.id,
+        action="DELETE_COURSE",
+        detail=f"Course ID {course_id} deleted"
+    )
+
     course.delete()
+
+    cache.delete("course_list")
+    cache.delete(f"course_detail_{course_id}")
 
     return {"message": "Deleted successfully"}

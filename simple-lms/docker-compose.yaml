@@ -11,6 +11,9 @@ services:
       - .env
     depends_on:
       - db
+      - redis
+      - mongodb
+      - rabbitmq
 
   db:
     image: postgres:15
@@ -21,6 +24,62 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432" 
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  celery-worker:
+    build: .
+    working_dir: /app/code/code
+    command: celery -A config worker -l info
+    volumes:
+      - .:/app/code
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - rabbitmq
+      - redis
+
+  celery-beat:
+    build: .
+    working_dir: /app/code/code
+    command: celery -A config beat -l info
+    volumes:
+      - .:/app/code
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - rabbitmq
+      - redis
+
+  flower:
+    build: .
+    working_dir: /app/code/code
+    command: celery -A config flower --port=5555
+    volumes:
+      - .:/app/code
+    env_file:
+      - .env
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery-worker
+
 volumes:
   postgres_data:
