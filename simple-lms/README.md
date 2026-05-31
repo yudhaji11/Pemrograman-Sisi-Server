@@ -316,7 +316,7 @@ Password : guest
 
 ### Docker Compose Services
 
-![Docker Compose](screenshots/docker-compose-ps.png)
+![Docker Compose](Screenshots/docker-compose-ps.png)
 
 Menampilkan seluruh service berhasil berjalan.
 
@@ -324,7 +324,7 @@ Menampilkan seluruh service berhasil berjalan.
 
 ### Redis Cache
 
-![Redis Cache](screenshots/redis-cache.png)
+![Redis Cache](Screenshots/redis-cache.png)
 
 ```json
 {
@@ -336,7 +336,7 @@ Menampilkan seluruh service berhasil berjalan.
 
 ### MongoDB Activity Logs
 
-![Activity Logs](screenshots/activity-logs.png)
+![Activity Logs](Screenshots/activity-logs.png)
 
 Menyimpan aktivitas pengguna seperti Create, Update, dan Delete Course.
 
@@ -344,12 +344,12 @@ Menyimpan aktivitas pengguna seperti Create, Update, dan Delete Course.
 
 ### Rate Limit
 
-![Rate Limit](screenshots/ratelimit1.png)
-![Rate Limit](screenshots/ratelimit2.png)
+![Rate Limit](Screenshots/ratelimit1.png)
+![Rate Limit](Screenshots/ratelimit2.png)
 
 ### Celery Task Execution
 
-![Celery Task](screenshots/logs-celery-worker.png)
+![Celery Task](Screenshots/logs-celery-worker.png)
 
 Menampilkan task berhasil diproses secara asynchronous.
 
@@ -358,7 +358,7 @@ Menampilkan task berhasil diproses secara asynchronous.
 
 ### Flower Monitoring
 
-![Flower](screenshots/flower-dashboard.png)
+![Flower](Screenshots/flower-dashboard.png)
 
 Monitoring task dan worker Celery.
 
