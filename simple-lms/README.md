@@ -196,4 +196,188 @@ Register → Login → Get Token → Akses API
 Screenshot Swagger
 ![Swagger](Screenshots/swagger.png)
 =======
+
+# Simple LMS - Progress 4: Advanced Features & Integration
+
+## Deskripsi
+
+Simple LMS merupakan aplikasi Learning Management System berbasis Django yang dikembangkan dengan fitur Redis Caching, MongoDB Integration, Celery Asynchronous Tasks, RabbitMQ Message Broker, dan Flower Monitoring untuk meningkatkan performa, skalabilitas, dan kemampuan monitoring sistem.
+
+---
+
+## Teknologi yang Digunakan
+
+* Django 5
+* Django Ninja
+* PostgreSQL
+* Redis
+* MongoDB
+* Celery
+* RabbitMQ
+* Flower
+* Docker Compose
+
+---
+
+## Arsitektur Sistem
+
+```mermaid
+flowchart TD
+    Client --> DjangoAPI
+    DjangoAPI --> PostgreSQL
+    DjangoAPI --> Redis
+    DjangoAPI --> MongoDB
+
+    DjangoAPI --> RabbitMQ
+    RabbitMQ --> CeleryWorker
+
+    CeleryBeat --> CeleryWorker
+    CeleryWorker --> Flower
+```
+
+---
+
+## Fitur yang Diimplementasikan
+
+### Redis Integration
+
+* Course List Cache
+* Course Detail Cache
+* Cache Invalidation (Create, Update, Delete)
+* Rate Limiting 60 request/menit
+
+### MongoDB Integration
+
+* Activity Logs Collection
+* Learning Analytics Collection
+* Aggregation Query Reports
+
+### Celery Tasks
+
+* `send_enrollment_email`
+* `generate_certificate`
+* `update_course_statistics`
+* `export_course_report`
+
+### Monitoring
+
+* RabbitMQ Management
+* Flower Monitoring Dashboard
+
+---
+
+## Docker Services
+
+Project dijalankan menggunakan Docker Compose dengan service:
+
+* web
+* db (PostgreSQL)
+* redis
+* mongodb
+* rabbitmq
+* celery-worker
+* celery-beat
+* flower
+
+---
+
+## Cara Menjalankan
+
+### Build dan Jalankan Container
+
+```bash
+docker compose up -d --build
+```
+
+### Melihat Status Service
+
+```bash
+docker compose ps
+```
+
+### Akses Aplikasi
+
+| Service     | URL                            |
+| ----------- | ------------------------------ |
+| Swagger API | http://localhost:8000/api/docs |
+| Flower      | http://localhost:5555          |
+| RabbitMQ    | http://localhost:15672         |
+
+RabbitMQ Default Login:
+
+```text
+Username : guest
+Password : guest
+```
+
+---
+
+## Dokumentasi Implementasi
+
+### Docker Compose Services
+
+![Docker Compose](screenshots/docker-compose-ps.png)
+
+Menampilkan seluruh service berhasil berjalan.
+
+---
+
+### Redis Cache
+
+![Redis Cache](screenshots/redis-cache.png)
+
+```json
+{
+  "source": "redis_cache"
+}
+```
+
+---
+
+### MongoDB Activity Logs
+
+![Activity Logs](screenshots/activity-logs.png)
+
+Menyimpan aktivitas pengguna seperti Create, Update, dan Delete Course.
+
+---
+
+### Rate Limit
+
+![Rate Limit](screenshots/ratelimit1.png)
+![Rate Limit](screenshots/ratelimit2.png)
+
+### Celery Task Execution
+
+![Celery Task](screenshots/logs-celery-worker.png)
+
+Menampilkan task berhasil diproses secara asynchronous.
+
+---
+
+
+### Flower Monitoring
+
+![Flower](screenshots/flower-dashboard.png)
+
+Monitoring task dan worker Celery.
+
+---
+
+
+## Hasil Implementasi
+
+Seluruh fitur pada Progress 4 berhasil diimplementasikan dan berjalan dengan baik, meliputi:
+
+* Redis Caching
+* MongoDB Document Storage
+* Rate Limiting
+* Celery Asynchronous Tasks
+* RabbitMQ Message Broker
+* Celery Beat Scheduler
+* Flower Monitoring
+* Docker Multi-Service Architecture
+
+Project berhasil memenuhi seluruh requirement pada tugas **Progress 4: Advanced Features & Integration**.
+
 >>>>>>> bed1e6d7986380c25f66530020fc6fd350929e82
